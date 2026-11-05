@@ -77,3 +77,79 @@ A comprehensive workflow for reading an entire codebase, generating a complete a
    - **الكود الحالي (Vulnerable Code):** توضيح الخطأ الموجود.
    - **الكود الآمن المقترح (Secure Patch):** كتابة الكود البديل المصحح بالكامل (جاهز للنسخ واللصق).
    - **شرح آلية الحماية (Defense Explanation):** شرح موجز لكيفية منع الثغرة بواسطة التعديل المقترح.
+---
+name: codebase-architect-auditor
+description: Perform a comprehensive full-codebase review, architecture mapping with color-coded Graphify status (Green/Orange/Red), segmented path analysis, syntax and logic validation, high-level security auditing with vulnerability triage, automated OpenAPI documentation generation, dependency vulnerability scanning, and Mermaid sequence diagram generation. Use when the user asks to map a codebase, audit code health, perform security checks, or generate a full project architecture and security report.
+---
+
+# Codebase Architect and Security Auditor
+
+A comprehensive workflow for reading an entire codebase, generating a complete architectural map with color-coded health indicators, analyzing segmented execution paths, enforcing strict high-level security triage, generating documentation, and scaffolding tests.
+
+## Token Optimization & State Management
+
+To avoid context window bloat and redundant processing, adhere strictly to the following rules:
+
+1. **State File Dependency (Single Source of Truth):**
+   - Once the skill generates a report or architecture map (e.g., `architecture_map.md` or audit reports), that file becomes the **Single Source of Truth**.
+   - In subsequent prompts, do NOT request the full codebase to be resent or read from the beginning of the conversation.
+
+2. **Delta Updates Only:**
+   - When the user requests modifications or additional checks:
+     - Do not re-read the entire project. Read only the specific target file or requested Diff.
+     - Update specific sections of the external reference file rather than regenerating the entire report from scratch.
+
+3. **Context Window Compression:**
+   - When answering subsequent inquiries, refer concisely to the specific section or line numbers in the pre-existing reference file instead of echoing its content in the response.
+
+## Steps
+
+### 1. Initial Codebase Dissection
+- Scan, catalog, and index the entire structure, extracting core entry points (`bootstrap`, `index.php`, `config.php`, etc.).
+- Build an internalized mental model of data flow.
+
+### 2. Segmented Path and Route Analysis
+- Aggregate API routes, endpoints, and middleware, verifying the separation of public document roots from the core kernel.
+
+### 3. Code Health and Quality Validation
+- Inspect for errors, enforce architectural cleanliness standards, and verify proper error handling and logging.
+
+### 4. Cross-File Compatibility and Integration
+- Validate namespaces, imports, and case-sensitivity (vital for Linux-based hosting environments).
+
+### 5. High-Level Security Dissection & Vulnerability Triage
+When inspecting any file or codebase, apply the following rigorous security protocol:
+- **Comprehensive Threat Pattern Scanning:** Filter code for critical security categories:
+  - *Injection Flaws:* Unsafe SQL queries (missing PDO Prepared Statements), Command Injection, or dynamic execution (`eval`).
+  - *Broken Access Control & IDOR:* Absence of session validation or Role-Based Access Control before sensitive operations.
+  - *Authentication & Session Management:* Cleartext password storage (missing `password_hash`), weak token generation, or missing CSRF tokens.
+  - *Insecure Data Handling & XSS:* Missing input sanitization/validation and output encoding.
+  - *Security Misconfigurations:* Sensitive error disclosures (`Display Errors Enabled`) or hardcoded credentials.
+- **Vulnerability Chain & Impact Analysis:** List detected issues in an organized format:
+  - `[VULN-ID]` (e.g., `SQLI-01` or `AUTH-02`).
+  - `Location:` Exact file name and line number.
+  - `Threat Vector:` OWASP Top 10 classification.
+  - `Impact Chain:` Step-by-step attacker exploitation path.
+- **Remediation & Secure Patching:** Provide ready-to-use fixes:
+  - *Vulnerable Code Snippet.*
+  - *Secure Patch:* Fully corrected replacement code ready for copy-pasting.
+  - *Defense Explanation:* Brief summary of how the patch blocks the vulnerability.
+
+### 6. Graphify Code Mapping & Color-Coded Health Status
+Evaluate and categorize all project components, files, and architectural links using the following color-coded indicators:
+- **🟢 Green (Strengths & Best Practices):** Secure code, proper use of PDO/prepared statements, clean dependency injection, or solid architecture patterns.
+- **🟠 Orange (Improvements Needed):** Functional code that requires refactoring, minor performance enhancements, missing rate-limiting, or DRY-principle violations.
+- **🔴 Red (Critical Risks & Security Flaws):** High-severity vulnerabilities, unvalidated inputs, hardcoded secrets, or dangerous exposure points requiring immediate intervention.
+
+### 7. Advanced Capabilities
+- **Mermaid Graph & Sequence Diagrams:** Visually map inter-file connections and request lifecycles with color-coded nodes.
+- **OpenAPI / Swagger Scaffolding:** Extract and standardize endpoint contracts.
+- **Dependency Vulnerability Scanning:** Review configuration packages (`composer.json`, `package.json`, `requirements.txt`) for known vulnerabilities.
+- **Automated Unit Test Scaffolding:** Generate automated testing templates for newly modified or added files.
+
+## Output Report Format
+1. Executive & Engineering Summary.
+2. Initial Dissection & Color-Coded Graphify Architecture Map (Mermaid graphs with Green/Orange/Red styling).
+3. Code Health & Compatibility Matrix.
+4. Comprehensive Security Audit & Vulnerability Triage with Ready-to-Use Patches.
+5. Proposed API Documentation & Unit Test Templates.
